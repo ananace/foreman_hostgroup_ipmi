@@ -1,0 +1,20 @@
+<%- ipmi_facet = @hostgroup.ensure_ipmi_hostgroup_facet %>
+
+<%= f.fields_for :ipmi_hostgroup_facet_attributes, ipmi_facet do |f| %>
+  <%= field_set_tag _("BMC Configuration"), :id => 'bmc_fields' do %>
+  <%= text_f f, :username %>
+  <%= password_f f, :password, :unset => action_name == "edit",
+                    :label_help => _("The BMC password will be used by Foreman to access the host's BMC controller via a BMC-enabled smart proxy, if available.<br/>").html_safe +
+                          (Setting[:bmc_credentials_accessible] ?
+                            _("The password will also be accessible to other users via templates and in the ENC YAML output; disable the bmc_credentials_accessible setting to prevent access.") :
+                            _("The password will not be accessible to other users; enable the bmc_credentials_accessible setting to permit access via templates and in the ENC YAML output.")),
+                     :label_help_options => {
+                        :title => _("BMC password usage"),
+                        :rel => 'popover-modal',
+                        :'data-placement' => "top"
+                     }
+  %>
+  <%= selectable_f f, :provider, Nic::BMC::PROVIDERS, {} %>
+  <%- end -%>
+<%- end -%>
+<%#= add_child_link '+ ' + _("Add BMC Configuration"), item, { :class => "info", :title => _('add new BMC Configuration') } %>
